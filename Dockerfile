@@ -1,8 +1,6 @@
-FROM jrottenberg/ffmpeg:4.1-ubuntu
-RUN apt-get update
-RUN apt-get install -y python3
-RUN apt-get install -y python3-pip
-COPY requirements.txt requirements.txt
-RUN pip3 install --no-cache-dir --upgrade -r requirements.txt
-COPY ./API.py API.py
-ENTRYPOINT ["uvicorn", "API:app", "--host", "0.0.0.0", "--port", "80"]
+FROM python:3.9
+WORKDIR /code
+COPY ./requirements.txt /code/requirements.txt
+RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+COPY ./API.py /code/API.py
+CMD ["fastapi", "run", "API.py", "--proxy-headers", "--port", "80"]
